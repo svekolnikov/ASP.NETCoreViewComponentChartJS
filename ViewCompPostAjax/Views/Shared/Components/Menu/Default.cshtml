@@ -1,0 +1,13 @@
+﻿@model IEnumerable<DataModel>
+@foreach (DataModel item in Model)
+{
+    <a class="btn btn-block btn-outline-primary py-1"
+       asp-action="index"
+       asp-controller="Home"
+       asp-route-id="@item.DataId">
+        @item.Name
+    </a>
+}
+
+@section Scripts {
+}

@@ -1,0 +1,196 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-1">
+            <vc:menu />
+        </div>
+        <div class="col-sm-4">
+            <form class="form-inline" asp-action="GetRange">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DataId" />
+                <input type="hidden" asp-for="SelectedRecords" />
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="date" asp-for="StartDate" class="form-control" id="startDate" placeholder="Start date">
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="date" asp-for="EndDate" class="form-control" id="endDate" placeholder="End date">
+                </div>
+                <div div class="form-group mx-sm-3 mb-2">
+                    <input type="submit" class="btn btn-primary" value="Get range" />
+                </div>
+            </form>
+
+            <hr />
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Scatter
+                        </th>
+                        <th>
+                            Bar
+                        </th>
+                        <th>
+                            Line
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SelectedRecords)
+                    {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateCreated)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ValueScatter)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ValueBar)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ValueLine)
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+        <div class="col-sm-7">
+            <div class="card-body p-1">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+    <script type="text/javascript">
+        //Chart
+        function newDate(day, month) {
+            return moment().date(day).month(month);
+        }
+
+        var ctx = document.getElementById('chart');
+        var labels = [];
+        var data1 = [];
+        var data2 = [];
+        var data3 = [];
+
+        @foreach(var d in Model.SelectedRecords)
+        {
+            @:labels.push("@d.DateCreated.Day");
+            @:data1.push("@d.ValueScatter");
+            @:data2.push("@d.ValueBar");
+            @:data3.push("@d.ValueLine");
+        }
+
+
+
+        var dataA = {
+            type: 'bar',
+            backgroundColor: 'rgba(122, 140, 255, 0.5)',
+            label: "Label A",
+            yAxisID: 'A',
+            data: data1,
+            lineTension: 0.3
+        };
+
+        var dataB = {
+            type: 'scatter',
+            backgroundColor: 'rgba(217, 88, 46, 0.5)',
+            label: "Label B",
+            yAxisID: 'A',
+            data: data2
+        };
+
+        var dataC = {
+            type: 'line',
+            backgroundColor: 'rgba(21, 46, 209, 0.5)',           
+            fill: false,
+            color: 'blue',
+            label: "Label C",
+            yAxisID: 'B',
+            data: data3
+        };
+
+        var chartData = {
+            labels: labels,
+            datasets: [dataA, dataB, dataC]
+        };
+
+        var chartOptions = {
+            elements: {
+                line: {
+                    tension: 0
+                }
+            },
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    boxWidth: 40,
+                    fontColor: 'black'
+                }
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Days',
+                        type: 'time',
+                        time: {
+                            unit: 'month'
+                        }
+                    }
+                }],
+                yAxes: [{
+                    id: 'A',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Y1 legend'
+                    },
+                    type: 'linear',
+                    position: 'left',
+                    ticks: {
+                        max: 100,
+                        min: 0
+                    }
+                }, {
+                    id: 'B',
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Y2 legend'
+                    },
+                    type: 'linear',
+                    position: 'right',
+                    ticks: {
+                        max: 100,
+                        min: 0
+                    }
+                }]
+            }
+        };
+
+
+        var lineChart = new Chart(ctx, {
+            type: 'bar',
+            data: chartData,
+            options: chartOptions
+        });
+    </script>
+}
