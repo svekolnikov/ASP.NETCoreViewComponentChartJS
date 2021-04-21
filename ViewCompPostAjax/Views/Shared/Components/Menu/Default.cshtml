@@ -1,13 +1,11 @@
-﻿@model IEnumerable<DataModel>
-@foreach (DataModel item in Model)
+﻿@model IEnumerable<int>
+
+@foreach (var item in Model)
 {
-    <a class="btn btn-block btn-outline-primary py-1"
+     <a class="btn btn-block my-1 py-1 @(item.ToString() == ViewBag.SelectedItem ? "btn-primary" : "btn-outline-primary")"
        asp-action="index"
        asp-controller="Home"
-       asp-route-id="@item.DataId">
-        @item.Name
-    </a>
-}
-
-@section Scripts {
+       asp-route-id="@item">
+        @item
+     </a>
 }

@@ -18,7 +18,11 @@ namespace ViewCompPostAjax.Data
             {
                 DataModel dataModel = new DataModel { DataId = i + 1, Name = $"Name{i + 1}" };
                 dataModel.Records = new List<RecordModel>();
-                for (int r = 1; r < 31; r++)
+
+                DateTime startDt = new DateTime(2021, 1, 1);
+                DateTime endDt = new DateTime(2021, 12, 31);
+
+                for (DateTime dt = startDt; dt < endDt; dt = dt.AddDays(1))
                 {
                     dataModel.Records.Add(new RecordModel
                     {
@@ -26,7 +30,7 @@ namespace ViewCompPostAjax.Data
                         ValueBar = rnd.Next(1, 100),
                         ValueLine = rnd.Next(1, 100),
                         DataId = dataModel.DataId,
-                        DateCreated = new DateTime(2021, 4, r)
+                        DateCreated = dt
                     });
                 }
                 _fakeContext.Add(dataModel);

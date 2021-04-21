@@ -31,28 +31,35 @@ namespace ViewCompPostAjax.Controllers
                 homeViewModel.DataId = (int)id;
             }
             _logger.LogInformation($"Action=Index id={id}");
-
             return View(homeViewModel);
         }
 
         [HttpPost]
-        public IActionResult GetRange(HomeViewModel vm)
-        {            
-            if (vm == null)
+        public IActionResult GetRange(RequestRangeDataBindingModel model)
+        {
+            if (model == null)
             {
                 return View("Index", new HomeViewModel() { SelectedRecords = new List<RecordModel>() });
             }
 
-            if (vm.DataId == null)
+            if (model.Id == null)
             {
-                return View("Index", vm);
+                return View("Index", new HomeViewModel() { SelectedRecords = new List<RecordModel>() });
             }
 
-            _logger.LogInformation($"Action=GetRange id={vm.DataId} startDate={vm.StartDate} endDate={vm.EndDate}");
+            _logger.LogInformation($"Action=GetRange id={model.Id} startDate={model.StartDate} endDate={model.EndDate}");
 
+            HomeViewModel vm = new HomeViewModel
+            {
+                DataId = model.Id,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate
+            };
             vm.SelectedRecords = _repository.Data
-                .FirstOrDefault(x => x.DataId == vm.DataId).Records
+                .FirstOrDefault(x => x.DataId == model.Id).Records
                 .Where(d => d.DateCreated >= vm.StartDate && d.DateCreated <= vm.EndDate);
+
+            ViewBag.SelectedItem = vm.DataId;
 
             return View("index", vm);
         }

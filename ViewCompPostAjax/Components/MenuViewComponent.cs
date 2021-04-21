@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using ViewCompPostAjax.Data;
 
 namespace ViewCompPostAjax.Components
@@ -13,8 +14,11 @@ namespace ViewCompPostAjax.Components
         }
         public IViewComponentResult Invoke()
         {
-            ViewBag.SelectedItem = RouteData?.Values["dataId"];
-            return View(_repository.Data);
+            ViewBag.SelectedItem = RouteData?.Values["id"];
+            return View(_repository.Data
+                .Select(x => x.DataId)
+                .Distinct()
+                .OrderBy(x => x));
         }
     }
 }

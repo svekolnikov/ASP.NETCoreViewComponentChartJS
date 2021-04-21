@@ -11,8 +11,7 @@
         <div class="col-sm-4">
             <form class="form-inline" asp-action="GetRange">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="DataId" />
-                <input type="hidden" asp-for="SelectedRecords" />
+                <input type="hidden" name="id" asp-for="DataId" />
                 <div class="form-group mx-sm-3 mb-2">
                     <input type="date" asp-for="StartDate" class="form-control" id="startDate" placeholder="Start date">
                 </div>
@@ -69,6 +68,11 @@
             <div class="card-body p-1">
                 <canvas id="chart"></canvas>
             </div>
+
+            <hr />
+
+            <h1>Id=@ViewBag.SelectedItem</h1>
+
         </div>
     </div>
 </div>
